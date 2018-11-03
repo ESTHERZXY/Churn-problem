@@ -1,0 +1,24 @@
+#install naive bayes package
+if (!require('e1071')) { 
+  install.packages('e1071',
+                   repos="https://cran.rstudio.com/",
+                   quiet=TRUE)
+  require('e1071') 
+}
+
+
+#Build the naive model
+NB <- naiveBayes(x = trainBIG, y = y_trainBIG)
+predNB <- predict(NB,test, type = "raw", threshold = 0.001)[,2]
+
+
+#Evaluate performance AUC
+if (!require('AUC')) { 
+  install.packages('AUC',
+                   repos="https://cran.rstudio.com/",
+                   quiet=TRUE)
+  require('AUC') 
+}
+
+(auc_nb <- AUC::auc(roc(predNB,y_test)))
+plot(roc(predNB, y_test))
